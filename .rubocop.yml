@@ -1,0 +1,7 @@
+Documentation:
+  Exclude:
+    - lib/lita/handlers/netping.rb
+
+FileName:
+  Exclude:
+    - lib/lita-netping.rb
