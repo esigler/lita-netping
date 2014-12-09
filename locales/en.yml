@@ -2,3 +2,10 @@ en:
   lita:
     handlers:
       netping:
+        help:
+          ping:
+            syntax: ping <target>
+            desc: Ping <target> (either DNS or IP address)
+        ping:
+          success: "%{host} responded to ping"
+          fail: "%{host} did not respond to ping"
