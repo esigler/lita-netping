@@ -27,7 +27,8 @@ module Lita
       end
 
       def ping_target(host)
-        Net::Ping::External.new(host).ping
+        p = Net::Ping::External.new(host)
+        p.ping(host, 1, 1, 1)
       end
     end
 
