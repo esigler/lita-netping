@@ -26,18 +26,28 @@ none
 Examples:
 
 ```
-ping google.com - Ping google.com
+ping google.com - Ping google.com via normal ICMP
+ping icmp google.com - Ping google.com via normal ICMP (same as above)
+ping http://www.google.com - Ping google.com via HTTP
+ping tcp://ldap.server:389 - Ping a TCP service running on ldap.server on port 389
+ping tcp app.server:8080 - Ping a TCP service running on app.server on port 8080
 ```
+
+Supported protocols are:
+
+* `http` - Ping a web service. It is usually simplest to just specify the URI like you would in a web browser.
+* `icmp` - The default if none is specified. This is your standard ping.
+* `tcp` - Verify that a TCP service is listening and responding. Note that this doesn't guarantee that the service is not misbehaving, just that it responds on the proper port.
 
 Syntax:
 
 ```
-ping <target> - Ping <target> (either DNS or IP address)
+ping [protocol] <target> - Ping <target> (either DNS nane, IP address, or URI)
 ```
 
 ## Note
 
-This plugin uses the net-ping library, and the "Net::Ping::External" check,
+This plugin uses the net-ping library, and the ICMP ping uses the "Net::Ping::External" check,
 so it will use the "ping" equivalent on whatever host it's running on.
 
 ## License
