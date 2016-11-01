@@ -42,7 +42,7 @@ Supported protocols are:
 Syntax:
 
 ```
-ping [protocol] <target> - Ping <target> (either DNS nane, IP address, or URI)
+ping [protocol] <target> - Ping <target> (either DNS name, IP address, or URI)
 ```
 
 ## Note
