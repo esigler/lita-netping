@@ -15,17 +15,29 @@ module Lita
         target = response.match_data['target']
 
         # Update the protocol based on the target
-        proto = URI(target).scheme if target.match /^(\S+):\/\/\S+/
+        proto = URI(target).scheme if target =~ %r{^(\S+)://\S+}
 
-        unless ['http', 'icmp', 'tcp'].include?(proto.downcase)
+        if valid_protocol?(proto)
+          response.reply(format(target, ping_target(proto.downcase, target)))
+        else
           response.reply(t('ping.unsupported', proto: proto))
-          return false
         end
-
-        response.reply(format(target, ping_target(proto.downcase, target)))
       end
 
       private
+
+      def extract_host_and_port(target)
+        if target =~ %r{^(\S+)://\S+}
+          host = URI(target).host
+          port = URI(target).port
+        elsif target =~ /:[0-9]+$/
+          host, _, port = target.rpartition(':')
+        else
+          host = target
+          port = nil
+        end
+        [host, port]
+      end
 
       def format(host, result)
         if result
@@ -37,30 +49,23 @@ module Lita
 
       def ping_target(proto, target)
         # dissect the target to get the hostname and port
-        if target.match /^(\S+):\/\/\S+/
-          uri = URI(target)
-          host = uri.host
-          port = uri.port
-        elsif target.match /:[0-9]+$/
-          host, _, port = target.rpartition(':')
-        else
-          host = target
-          port = nil
-        end
+        host, port = extract_host_and_port(target)
 
         case proto
         when 'http'
           # With HTTP, we can just pass the target
           p = Net::Ping::HTTP.new(target)
-          p.ping
         when 'icmp'
           # The default
           p = Net::Ping::External.new(host)
-          p.ping(host, 1, 1, 1)
         when 'tcp'
-          p = port ? Net::Ping::TCP.new(host, port) : Net::Ping::TCP.new(host)
-          p.ping
+          p = Net::Ping::TCP.new(host, port)
         end
+        proto == 'icmp' ? p.ping(host, 1, 1, 1) : p.ping
+      end
+
+      def valid_protocol?(proto)
+        %w(http icmp tcp).include?(proto.downcase)
       end
     end
 
