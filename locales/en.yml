@@ -4,8 +4,9 @@ en:
       netping:
         help:
           ping:
-            syntax: ping <target>
-            desc: Ping <target> (either DNS or IP address)
+            syntax: ping [protocol] <target>
+            desc: Ping [protocol] <target> (either DNS or IP address)
         ping:
           success: "%{host} responded to ping"
           fail: "%{host} did not respond to ping"
+          unsupported: "%{proto} is not a supported protocol"
